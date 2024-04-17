@@ -1,7 +1,9 @@
-import Main from "./Main";
+import Main from "./Main"
 
 function App() {
-  return <Main title="React">리액트</Main>;
-}
+    const [message, setMessage] = useState()
+    
+    const onchage
 
-export default App;
+    return <main onChange={}></main>
+}
