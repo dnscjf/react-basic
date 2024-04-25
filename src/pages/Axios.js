@@ -7,7 +7,7 @@ const Axios = () => {
   const onClick = async () => {
     console.log("버튼 작동");
     try {
-      const response = await axios.get("https://newsapi.org/v2/top-headlines?country=kr&apiKey=b5090a6bac1540a49cb9fc892d92d43d");
+      const response = await axios.get("https://newsapi.org/v2/top-headlines?country=kr&apiKey=2643cbf990d745d1b6364556178f4271");
       setData(response.data);
     } catch (error) {
       console.log(error);
