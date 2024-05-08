@@ -8,6 +8,7 @@
 - https://jsonplaceholder.typicode.com/
 
 - src/pages/Axios.js
+
 ```js
 import axios from "axios";
 import { useState } from "react";
@@ -30,7 +31,13 @@ const Axios = () => {
       <div>
         <button onClick={onClick}>불러오기</button>
       </div>
-      {data && <textarea rows={7} readOnly={true} value={JSON.stringify(data, null, 2)} />}
+      {data && (
+        <textarea
+          rows={7}
+          readOnly={true}
+          value={JSON.stringify(data, null, 2)}
+        />
+      )}
     </div>
   );
 };
@@ -39,6 +46,7 @@ export default Axios;
 ```
 
 - axync / await 적용
+
 ```js
 import axios from "axios";
 import { useState } from "react";
@@ -49,7 +57,9 @@ const Axios = () => {
   const onClick = async () => {
     console.log("버튼 작동");
     try {
-      const response = await axios.get("https://jsonplaceholder.typicode.com/posts/1");
+      const response = await axios.get(
+        "https://jsonplaceholder.typicode.com/posts/1",
+      );
       setData(response.data);
     } catch (error) {
       console.log(error);
@@ -62,7 +72,13 @@ const Axios = () => {
       <div>
         <button onClick={onClick}>불러오기</button>
       </div>
-      {data && <textarea rows={7} readOnly={true} value={JSON.stringify(data, null, 2)} />}
+      {data && (
+        <textarea
+          rows={7}
+          readOnly={true}
+          value={JSON.stringify(data, null, 2)}
+        />
+      )}
     </div>
   );
 };
@@ -74,7 +90,43 @@ export default Axios;
 
 - https://newsapi.org/register
 - https://newsapi.org/s/south-korea-news-api
+- src/pages/Axios.js
 
+```js
+import axios from "axios";
+import { useState } from "react";
 
+const Axios = () => {
+  const [data, setData] = useState(null);
 
+  const onClick = async () => {
+    console.log("버튼 작동");
+    try {
+      const response = await axios.get(
+        "https://newsapi.org/v2/top-headlines?country=kr&apiKey=2643cbf990d745d1b6364556178f4271",
+      );
+      setData(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  return (
+    <div>
+      <h2>axios</h2>
+      <div>
+        <button onClick={onClick}>불러오기</button>
+      </div>
+      {data && (
+        <textarea
+          rows={7}
+          readOnly={true}
+          value={JSON.stringify(data, null, 2)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Axios;
+```
