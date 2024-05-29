@@ -117,7 +117,7 @@ useEffect(()=>{},[의존성 배열])
 - 리듀서 : 주문 받은걸 만들고 가공해서 손님에게 내 준다.
 
 - useState보다 더 다양한 컴포넌트 상황에 따라 다양한 상태를 다른 값으로 업데이트 해주고 싶을 때 사용하는 Hook
-- 리듀서는 현재상태, 그리고 업데이트를 위해 필요한 정보를 담은 액션(action)값을 전달받아 새로운 상태를 반환하는 함수 
+- 리듀서는 현재상태, 그리고 업데이트를 위해 필요한 정보를 담은 액션(action)값을 전달받아 새로운 상태를 반환하는 함수
 - 리듀서 함수에서 새로운 상태를 만들 때는 반드시 불변성을 지켜 주어야 한다.
 
 ### 6.3.1 카운터 구현하기
@@ -132,7 +132,7 @@ import CounterReducer from "../componets/CounterReducer";
 const MainPage = () => {
   return (
     <div>
-        <h1>Hooks study</h1>
+      <h1>Hooks study</h1>
       <h1>메인 페이지입니다.</h1>
       <div>
         <h2>useState</h2>
@@ -149,8 +149,7 @@ const MainPage = () => {
         <h3>예시: 리듀서 활용 카운터 앱</h3>
         <CounterReducer />
       </div>
-      <div>
-      </div>
+      <div></div>
     </div>
   );
 };
@@ -170,30 +169,40 @@ import React, { useReducer, useState } from "react";
 import { act } from "react-dom/test-utils";
 
 const reducer = (state, action) => {
-    return {
-        ...state,
-        [action.name]: action.value,
-    };
+  return {
+    ...state,
+    [action.name]: action.value,
+  };
 };
 
 const InputReducer = () => {
-    const [state, dispatch] = useReducer(reducer, {
-        username: "",
-        nickname: ""
-    });
+  const [state, dispatch] = useReducer(reducer, {
+    username: "",
+    nickname: "",
+  });
 
-    const { username, nickname } = state;
+  const { username, nickname } = state;
 
-    const onChange = e => {
-        dispatch(e.target);
-    };
+  const onChange = e => {
+    dispatch(e.target);
+  };
 
   return (
     <div>
       <div>
-        <input type="text" name="username" value={username} onChange={onChange} />
+        <input
+          type="text"
+          name="username"
+          value={username}
+          onChange={onChange}
+        />
         <br />
-        <input type="text" name="nickname" value={nickname} onChange={onChange} />
+        <input
+          type="text"
+          name="nickname"
+          value={nickname}
+          onChange={onChange}
+        />
       </div>
       <div>
         <b>이름:</b> {username}
@@ -220,7 +229,7 @@ const InputReducer = () => {
   // userInfo 상태
   const [userInfo, setUserInfo] = useState(initState);
 
-  const {username, nickname} = userInfo;
+  const { username, nickname } = userInfo;
 
   // username 이벤트 핸들러
   const onChange = e => {
@@ -261,11 +270,101 @@ export default InputReducer;
 
 ## 6.4 useMemo
 
-- 나중에...
+- 함수 컴포넌트 내부에서 발생하는 연산을 최적화 할 수 있다.
 
 ## 6.5 useCallback
 
-- 나중에...
+- useMemo와 상당히 비슷한 함수
+- 주로 렌더링 성능을 참회해야 사용할 수 있다.
+- 이 Hook을 사용하면 만들어놨던 함수를 재사용할 수 있다.
+- 컴포넌트가 리렌더링 될 때마다 새로 만들어진 함수를 사용하게 되는 것은 렌더링이 자주 발생하거나 렌더링해야할 컴포넌트의 개수가 많아지면 최적화하는 것이 좋다.
+
+```js
+import React, { useCallback, useMemo, useRef, useState } from "react";
+
+const getAverage = number => {
+  console.log("평균값 계산 중...");
+  if (number.length === 0) return 0;
+
+  // https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
+  const sum = number.reduce((a, b) => a + b);
+  return sum / number.length;
+};
+
+const Average = () => {
+  const [list, setList] = useState([]);
+  const [number, setNumber] = useState("");
+  // useRef
+  const inputElement = useRef(null);
+
+  // input 이벤트 핸들러
+  const onChange = useCallback(e => {
+    setNumber(e.target.value);
+    console.log(e.target.value);
+  }, []);
+
+  // button 이벤트 핸들러
+  const onClick = useCallback(() => {
+    const nextList = list.concat(parseInt(number));
+    setList(nextList);
+    setNumber("");
+    // useRef
+    inputElement.current.focus();
+  }, [number, list]);
+
+  // useRef 로컬 변수 사용하기
+  // 더블클릭 방지 기능
+  const isClick = useRef(false);
+  const preventDblClick = () => {
+    if (isClick.current) {
+      console.log("이미 처리중입니다...");
+      inputElement.current.focus();
+      return;
+    }
+
+    console.log("처리 시작...");
+    isClick.current = true;
+    onClick();
+
+    // 처리에 1초가 소요된다고 가정하자.
+    setTimeout(() => {
+      isClick.current = false;
+      console.log("처리완료");
+    }, 2000);
+  };
+
+  // const avg = getAverage(list);
+  // useMemo를 사용할 때
+  // input 내용이 바뀔 때는 평균값을 계산할 필요 없음
+  // list가 바뀌었을 때만 평균값을 계산
+  const avg = useMemo(() => {
+    return getAverage(list);
+  }, [list]);
+
+  return (
+    <div>
+      <input
+        type="number"
+        value={number}
+        onChange={onChange}
+        ref={inputElement}
+      />
+      <button onClick={preventDblClick}>등록</button>
+      <ul>
+        {list.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+      <div>
+        <b>평균값: </b>
+        {avg}
+      </div>
+    </div>
+  );
+};
+
+export default Average;
+```
 
 ## 6.6 useRef
 
@@ -418,5 +517,3 @@ const Average = () => {
 
 export default Average;
 ```
-
-
