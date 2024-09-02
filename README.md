@@ -71,7 +71,7 @@ export default App;
 
 ## 10.3 동적 Context 사용하기
 
-- Context의 값을 업데이트 해야하는 경우
+- Context의 값을 업데이트 해야하는 경우에 사용한다.
 
 ### 10.3.1 Context 파일
 
