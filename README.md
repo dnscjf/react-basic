@@ -86,7 +86,7 @@ const Axios = () => {
 export default Axios;
 ```
 
-# 9.2 newsapi API 키 발급받기
+# 9.2 newsapi API 키 발급
 
 - https://newsapi.org/register
 - https://newsapi.org/s/south-korea-news-api
